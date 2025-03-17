@@ -4,7 +4,7 @@ import { toast ,ToastContainer } from "react-toastify";
 import axios from "axios";
 
 const Signup = () => {
-  const API = "http://localhost:5000";
+  const API = "https://library-assignment-s3zd.onrender.com";
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
