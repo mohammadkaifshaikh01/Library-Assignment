@@ -7,7 +7,7 @@ import ContextApi from "./context/ContextApi"; // ✅ Ensure Correct Import
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ContextApi> {/* ✅ Wrapping App with Context */}
+    <ContextApi> 
       <BrowserRouter>
         <App />
       </BrowserRouter>
