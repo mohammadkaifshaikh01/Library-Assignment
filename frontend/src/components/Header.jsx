@@ -1,8 +1,8 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import {  Link } from "react-router-dom";
 
 const Header = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   return (
     <div className="flex flex-col md:flex-row flex-wrap bg-blue-600 rounded-lg px-6 md:px-10 lg:px-20">
       {/* Left Side Content */}

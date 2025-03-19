@@ -9,7 +9,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setIsAuth(false);
-    localStorage.clear("role")
+  
     navigate("/login");
   };
 
