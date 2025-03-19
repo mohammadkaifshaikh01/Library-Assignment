@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast ,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 
 const Signup = () => {
@@ -9,31 +9,34 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userData = { username, email, password, role };
-    console.log(userData);
-    
-    if ((!username, !email, !password, !role)) {
+    if (!username || !email || !password || !role) {
       toast.error("Please Fill All Fields");
-      return
+      return;
     }
-    
+
+    const userData = { username, email, password, role };
     localStorage.setItem("role", userData.role);
+    setLoading(true); // Start loading
 
     try {
-      const response = await axios.post(`${API}/user/register` , userData);
+      const response = await axios.post(`${API}/user/register`, userData);
       console.log(response);
-
-      toast.success("Register Successfull !");
-      setTimeout(() => navigate("/login"), 2000);
+      toast.success("Register Successful!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       console.error(error);
       toast.error(
         error.response?.data?.message || "Signup failed! Please try again."
       );
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -93,9 +96,10 @@ const Signup = () => {
 
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-md transition duration-200"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-md transition duration-200 disabled:bg-gray-400"
+              disabled={loading} // Disable button when loading
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
 
             <p className="text-center text-gray-600 mt-4">
@@ -110,19 +114,7 @@ const Signup = () => {
           </form>
         </div>
       </div>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        
-      />
+      <ToastContainer position="top-center" autoClose={3000} />
     </>
   );
 };

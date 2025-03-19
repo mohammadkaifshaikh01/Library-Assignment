@@ -36,7 +36,7 @@ const Login = () => {
       setToken(response.data.token);
       setRole(response.data.role);
 
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => navigate("/"), 1000);
     } catch (error) {
       console.error(error);
       toast.error(
@@ -87,7 +87,7 @@ const Login = () => {
             <p className="text-center text-gray-600 mt-4">
               Not Account?
               <span
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/signup")}
                 className="text-blue-500 cursor-pointer"
               >
                 {" "}

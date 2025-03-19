@@ -1,63 +1,78 @@
-import axios from "axios";
-
 import React, { useContext, useState } from "react";
+import axios from "axios";
+import Select from "react-select";
 import { toast, ToastContainer } from "react-toastify";
 import { Context } from "../context/ContextApi";
 
+const genreOptions = [
+  { value: "Fiction", label: "Fiction" },
+  { value: "Non-Fiction", label: "Non-Fiction" },
+  { value: "Mystery", label: "Mystery" },
+  { value: "Romance", label: "Romance" },
+  { value: "Thriller", label: "Thriller" },
+  { value: "Fantasy", label: "Fantasy" },
+  { value: "Horror", label: "Horror" },
+  { value: "Anime", label: "Anime" },
+  { value: "Action", label: "Action" },
+  { value: "Drama", label: "Drama" },
+  { value: "Adventure", label: "Adventure" },
+  { value: "Martial Arts", label: "Martial Arts" },
+  { value: "Magic", label: "Magic" },
+  { value: "Comedy", label: "Comedy" },
+
+];
+
 
 const AddBook = () => {
-  const {token } = useContext(Context);
+  const { token } = useContext(Context);
   const API = "https://library-assignment-s3zd.onrender.com";
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
-  const [genre, setGenre] = useState("");
-  const [year, setYear] = useState(0);
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [year, setYear] = useState("");
   const [cover, setCover] = useState(null);
+  const [loading, setLoading] = useState(false); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-
-
-    if (!title || !author || !description || !genre || !year || !cover) {
+    if (!title || !author || !description || selectedGenres.length === 0 || !year || !cover) {
       toast.error("Please Fill All Fields");
       return;
     }
-  
-    // Use FormData to send files
+
+    setLoading(true); 
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("author", author);
     formData.append("description", description);
-    formData.append("genre", genre);
+    formData.append("genre", selectedGenres.map((g) => g.value).join(", ")); 
     formData.append("year", year);
-    formData.append("cover", cover); 
-  
+    formData.append("cover", cover);
+
     try {
-      const response = await axios.post(`${API}/books/add-book`, formData, {
+      await axios.post(`${API}/books/add-book`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-  
-      console.log(response);
+
       toast.success("Book Added Successfully");
-  
-      // Reset the form
       setTitle("");
       setAuthor("");
       setDescription("");
-      setGenre("");
+      setSelectedGenres([]);
       setYear("");
       setCover(null);
     } catch (error) {
-      console.log("Something went wrong", error);
-      toast.error("Something Went Wrong");
+      toast.error("Something Went Wrong" ,error);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
     <>
@@ -99,14 +114,17 @@ const AddBook = () => {
               onChange={(e) => setYear(e.target.value)}
             />
 
-            <input
-              type="text"
-              placeholder="Genre"
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
+         
+            <Select
+              isMulti
+              options={genreOptions}
+              className="w-full"
+              placeholder="Select Genres"
+              value={selectedGenres}
+              onChange={setSelectedGenres}
             />
-             <input
+
+            <input
               type="file"
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
               onChange={(e) => setCover(e.target.files[0])}
@@ -116,12 +134,14 @@ const AddBook = () => {
             <button
               type="submit"
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md transition duration-200"
+              disabled={loading}
             >
-              Add Book
+              {loading ? "Adding Book..." : "Add Book"}
             </button>
           </form>
         </div>
       </div>
+
       <ToastContainer
         position="top-center"
         autoClose={3000}

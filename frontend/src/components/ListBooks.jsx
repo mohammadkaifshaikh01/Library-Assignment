@@ -7,6 +7,26 @@ const ListBooks = () => {
   const [loading, setLoading] = useState(false);
   const [searcher, setSearcher] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState("");
+
+  const genres = [
+    { value: "", label: "All" },
+    { value: "Fiction", label: "Fiction" },
+    { value: "Non-Fiction", label: "Non-Fiction" },
+    { value: "Mystery", label: "Mystery" },
+    { value: "Romance", label: "Romance" },
+    
+    { value: "Thriller", label: "Thriller" },
+    { value: "Fantasy", label: "Fantasy" },
+    { value: "Horror", label: "Horror" },
+    { value: "Anime", label: "Anime" },
+    { value: "Action", label: "Action" },
+    { value: "Drama", label: "Drama" },
+    { value: "Adventure", label: "Adventure" },
+    { value: "Martial Arts", label: "Martial Arts" },
+    { value: "Magic", label: "Magic" },
+    { value: "Comedy", label: "Comedy" },
+  ];
 
   const fetchBooks = async () => {
     setLoading(true);
@@ -26,113 +46,143 @@ const ListBooks = () => {
 
   const searchFilter = (e) => {
     const search = e.target.value;
-    const searchFilter = listBook.filter((elem) =>
-      elem.title.toLowerCase().includes(search.toLowerCase()) ||
-      elem.author.toLowerCase().includes(search.toLowerCase()) ||
-      elem.genre.toLowerCase().includes(search.toLowerCase()) 
+    filterBooks(search, selectedGenre);
+  };
 
-    );
-    setSearcher(searchFilter);
+  const filterByGenre = (genre) => {
+    setSelectedGenre(genre);
+    filterBooks("", genre);
+  };
+
+  const filterBooks = (searchTerm, genre) => {
+    let filtered = listBook;
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (elem) =>
+          elem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          elem.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          elem.genre.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (genre) {
+      filtered = filtered.filter((elem) =>
+        elem.genre.toLowerCase().includes(genre.toLowerCase())
+      );
+    }
+
+    setSearcher(filtered);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        📚 Book Collection
-      </h2>
-      <input
-        type="text"
-        onChange={searchFilter}
-        placeholder="🔍 Search  a Book Title  or Authot or Genre"
-        className="w-full p-3 text-gray-700 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
+    <div className="relative min-h-screen">
+      {/* Main Content with Blur Effect */}
+      <div
+        className={`container mx-auto px-4 py-8 transition ${
+          selectedBook ? "blur-md" : ""
+        }`}
+      >
+        <input
+          type="text"
+          onChange={searchFilter}
+          placeholder="🔍 Search a Book Title, Author or Genre"
+          className="w-150 p-3 text-gray-700 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
 
-      {loading && (
-        <p className="text-lg mt-15 text-blue-600 animate-pulse text-center">
-          Loading Books...
-        </p>
-      )}
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10">
-        {searcher.length > 0 ? (
-          searcher.map((elem) => (
-            <div
-              key={elem._id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 border cursor-pointer"
-              onClick={() => setSelectedBook(elem)}
+        <div className="flex flex-wrap gap-3 mt-4">
+          {genres.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => filterByGenre(value)}
+              className={`px-4 py-2 text-sm font-semibold rounded-full transition ${
+                selectedGenre === value
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
             >
-              <div className="p-4">
-                <img
-                  src={elem.cover}
-                  alt={elem.title}
-                  className="w-full h-56 object-cover mb-4 rounded-lg"
-                />
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {elem.title}
-                </h3>
-                <p className="text-gray-600 mb-1">
-                  <strong>Author:</strong> {elem.author}
-                </p>
-                <p className="text-gray-500 text-sm">
-                  <strong>Genre:</strong> {elem.genre}
-                </p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-700 text-lg font-semibold">
-            No Books Found 📖
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {loading && (
+          <p className="text-lg mt-4 text-blue-600 animate-pulse text-center">
+            Loading Books...
           </p>
         )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
+          {searcher.length > 0 ? (
+            searcher.map((elem) => (
+              <div
+                key={elem._id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 border cursor-pointer"
+                onClick={() => setSelectedBook(elem)}
+              >
+                <div className="p-4">
+                  <img
+                    src={elem.cover}
+                    alt={elem.title}
+                    className="w-full h-56 object-cover mb-4 rounded-lg"
+                  />
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    {elem.title}
+                  </h3>
+                  <p className="text-gray-600 mb-1">
+                    <strong>Author:</strong> {elem.author}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    <strong>Genre:</strong> {elem.genre}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-700 text-lg font-semibold">
+              No Books Found 📖
+            </p>
+          )}
+        </div>
       </div>
 
-      
+      {/* Book Details Modal */}
       {selectedBook && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md z-50">
-          <div className="bg-white p-8 rounded-lg shadow-2xl max-w-3xl w-full relative">
-          
-            <button
-              className="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-3xl font-bold"
-              onClick={() => setSelectedBook(null)}
-            >
-              &times;
-            </button>
+        <div className="fixed inset-0 flex items-center justify-center  backdrop-blur-xs">
+          <div className="bg-white p-8 rounded-lg    border-1 border-gray-300 shadow-lg w-12/13 max-w-4xl h-120 flex flex-col sm:flex-row">
+            {/* Book Image */}
+            <img
+              src={selectedBook.cover}
+              alt={selectedBook.title}
+              className="w-full sm:w-2/3 h-80 object-cover rounded-lg "
+            />
 
-          
-            <div className="flex flex-col md:flex-row items-center">
-            
-              <img
-                src={selectedBook.cover}
-                alt={selectedBook.title}
-                className="w-60 h-80 object-cover rounded-lg shadow-md mb-4 md:mb-0 md:mr-6"
-              />
-
-              
-              <div className="flex-1">
-                <h2 className="text-3xl font-bold text-gray-800">
+            {/* Book Details */}
+            <div className="sm:ml-6 flex flex-col justify-between p-4">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800">
                   {selectedBook.title}
                 </h2>
-                <p className="text-lg text-gray-700 mt-2">
+                <p className="text-gray-600 mt-2">
                   <strong>Author:</strong> {selectedBook.author}
                 </p>
-                <p className="text-md text-gray-600 mt-1">
+                <p className="text-gray-500">
                   <strong>Genre:</strong> {selectedBook.genre}
                 </p>
-                <p className="text-gray-500 mt-4 leading-relaxed">
-                  {selectedBook.description}
+                <p className="text-gray-500">
+                  <strong>Year:</strong> {selectedBook.year}
                 </p>
-
-               
-               
-
-              
-                <button
-                  onClick={() => setSelectedBook(null)}
-                  className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition duration-300"
-                >
-                  Close Details
-                </button>
+                <div className="mt-5">
+                  <h3 className="text-red-500 font-bold">Description : </h3>
+                  <p className=" text-gray-700">{selectedBook.description}</p>
+                </div>
               </div>
+              <button
+                onClick={() => setSelectedBook(null)}
+                className="mt-4 px-4 py-2 bg-red-500 text-white font-bold rounded-md hover:bg-red-600 transition"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

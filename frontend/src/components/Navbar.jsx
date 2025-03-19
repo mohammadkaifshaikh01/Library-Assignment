@@ -4,9 +4,13 @@ import { Context } from "../context/ContextApi";
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { isAuth ,role ,  } = useContext(Context);
-
+  const { isAuth, role, setIsAuth } = useContext(Context); 
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setIsAuth(false); 
+    navigate("/login");
+  };
 
   return (
     <div className="flex items-center justify-between text-sm py-3 mb-5 border-b border-b-gray-400 px-5">
@@ -15,15 +19,11 @@ const Navbar = () => {
         src="https://www.library-management.com/uploads/60196c0c6f3a8_logo_.png"
         alt="logo"
         className="w-33 h-11 cursor-pointer"
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate("/")}
       />
 
       {/* Desktop Menu */}
-      <ul className="hidden md:flex items-center gap-10 font-medium">
-        <NavLink to="/dashboard">
-          <li className="py-3">DASHBOARD</li>
-        </NavLink>
-      </ul>
+    
 
       <div className="flex items-center gap-4">
         {isAuth && role === "admin" && (
@@ -32,6 +32,15 @@ const Navbar = () => {
             onClick={() => navigate("/add-book")}
           >
             Add Book
+          </button>
+        )}
+
+        {isAuth && (
+          <button
+            className="cursor-pointer bg-red-500 py-2 text-white px-7 rounded-full font-light hidden md:block"
+            onClick={handleLogout}
+          >
+            Logout
           </button>
         )}
 
@@ -84,10 +93,21 @@ const Navbar = () => {
           <NavLink onClick={() => setShowMenu(false)} to="/dashboard">
             DASHBOARD
           </NavLink>
-          {isAuth === "admin" && (
+          {isAuth && role === "admin" && (
             <NavLink onClick={() => setShowMenu(false)} to="/add-book">
               Add Book
             </NavLink>
+          )}
+          {isAuth && (
+            <button
+              className="mt-2 bg-red-500 py-2 text-white px-5 rounded-lg w-full text-center"
+              onClick={() => {
+                setShowMenu(false);
+                handleLogout();
+              }}
+            >
+              Logout
+            </button>
           )}
         </ul>
       </div>
