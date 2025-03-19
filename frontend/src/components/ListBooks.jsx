@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+// import CardSkeleton from "./Skeleton";
+import BookCardSkeleton from "./Skeleton";
 
 const ListBooks = () => {
   const API = "https://library-assignment-s3zd.onrender.com";
@@ -107,9 +109,11 @@ const ListBooks = () => {
         </div>
 
         {loading && (
-          <p className="text-lg mt-4 text-blue-600 animate-pulse text-center">
-            Loading Books...
-          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
+      {[...Array(8)].map((_, index) => (
+        <BookCardSkeleton key={index} />
+      ))}
+    </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
