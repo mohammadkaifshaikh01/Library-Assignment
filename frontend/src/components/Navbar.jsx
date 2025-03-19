@@ -9,7 +9,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setIsAuth(false);
-  
     navigate("/login");
   };
 
@@ -24,9 +23,16 @@ const Navbar = () => {
       />
 
       {/* Desktop Menu */}
-    
-
       <div className="flex items-center gap-4">
+        {!isAuth && (
+          <button
+            className="cursor-pointer bg-blue-500 py-2 text-white px-7 rounded-full font-light hidden md:block"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+        )}
+
         {isAuth && role === "admin" && (
           <button
             className="cursor-pointer bg-orange-500 py-2 text-white px-7 rounded-full font-light hidden md:block"
@@ -94,6 +100,11 @@ const Navbar = () => {
           <NavLink onClick={() => setShowMenu(false)} to="/dashboard">
             DASHBOARD
           </NavLink>
+          {!isAuth && (
+            <NavLink onClick={() => setShowMenu(false)} to="/login">
+              Login
+            </NavLink>
+          )}
           {isAuth && role === "admin" && (
             <NavLink onClick={() => setShowMenu(false)} to="/add-book">
               Add Book
