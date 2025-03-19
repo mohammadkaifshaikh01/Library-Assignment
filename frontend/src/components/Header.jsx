@@ -1,8 +1,18 @@
-import React from "react";
-import {  Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { Context } from "../context/ContextApi";
 
 const Header = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { isAuth } = useContext(Context);
+
+  const handleNavigate = () => {
+    if (isAuth) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <div className="flex flex-col md:flex-row flex-wrap bg-blue-600 rounded-lg px-6 md:px-10 lg:px-20">
       {/* Left Side Content */}
@@ -17,10 +27,15 @@ const Header = () => {
             easily.
             <br className="hidden sm:block" />
             Your gateway to knowledge starts here.
+            <br />
+        
           </p>
         </div>
-        <Link
-          to="/dashboard"
+          <p className="mt-5 text-xl text-amber-100"><span className="text-white">If Your'e Login ....</span>
+          <br />
+          Click on this button to go to the dashboard</p>
+        <button
+          onClick={handleNavigate}
           className="flex items-center gap-2 bg-white px-8 py-3 rounded-full text-gray-700 text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300"
         >
           Explore Library{" "}
@@ -29,7 +44,7 @@ const Header = () => {
             src="https://cdn-icons-png.flaticon.com/512/1828/1828925.png"
             alt="Arrow Icon"
           />
-        </Link>
+        </button>
       </div>
 
       {/* Right Side Image */}
