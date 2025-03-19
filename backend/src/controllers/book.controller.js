@@ -82,4 +82,40 @@ const getBookById = async (req, res) => {
   }
 };
 
-export { addBook ,getBooks , getBookById};
+const updateBook = async(req,res)=>{
+
+  const id = req.params.id
+  try {
+    const {title,description,year,author,genre} = req.body
+    const updatebook =  {title,description,year,author,genre}
+    await BookModel.updateOne({_id: id} , updatebook)
+    res.status(200).json({
+      message : "Book Updated",
+      updateBook
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      message : "Can't Updated Book"
+    })
+  }
+
+}
+
+const deleteBook = async(req,res) =>{
+  const id = req.params.id
+  try {
+    const deletedbook = await BookModel.findByIdAndDelete(id)
+  res.status(200).json({
+    message : "Book Delete SuccessFully !",
+    deletedbook
+  })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      message : "Can't Delete Book"
+    })
+  }
+}
+
+export { addBook ,getBooks , getBookById ,updateBook ,deleteBook};

@@ -74,4 +74,18 @@ const userLogin = async (req, res) => {
   }
 }
 
-export { userRegister ,userLogin };
+const getUser = async (req, res) => {
+  try {
+    const user = await UserModel.find({role : "user"},{password:0});
+    console.log(user)
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something Went Wrong",
+      error: error,
+    });
+  }
+};
+
+export { userRegister ,userLogin,getUser}; 
