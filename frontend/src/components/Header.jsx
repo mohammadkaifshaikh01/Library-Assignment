@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate()
   return (
     <div className="flex flex-col md:flex-row flex-wrap bg-blue-600 rounded-lg px-6 md:px-10 lg:px-20">
       {/* Left Side Content */}
@@ -17,9 +19,9 @@ const Header = () => {
             Your gateway to knowledge starts here.
           </p>
         </div>
-        <a
+        <p
           className="flex items-center gap-2 bg-white px-8 py-3 rounded-full text-gray-700 text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300"
-          href="/dashboard"
+         onClick={()=>navigate("/dashboard")}
         >
           Explore Library{" "}
           <img
@@ -27,7 +29,7 @@ const Header = () => {
             src="https://cdn-icons-png.flaticon.com/512/1828/1828925.png"
             alt="Arrow Icon"
           />
-        </a>
+        </p>
       </div>
 
       {/* Right Side Image */}

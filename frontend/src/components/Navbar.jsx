@@ -8,7 +8,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsAuth(false); 
+    setIsAuth(false);
+    localStorage.clear("role")
     navigate("/login");
   };
 
